@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import BytesIo
 
 
 st.set_page_config(layout='wide')
@@ -39,6 +40,21 @@ if st.toggle('Modifica parametri'):
 def multifiltro(df, campo, selected ):
     df = df[[any(elemento in check for elemento in selected) for check in df[campo].astype(str)]]
     return df
+
+def scarica_excel(df, filename):
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1',index=False)
+    writer.close()
+
+    st.download_button(
+        label="Download Excel workbook",
+        data=output.getvalue(),
+        file_name=filename,
+        mime="application/vnd.ms-excel"
+    )
+
+
 
 # FILTRO ================================================================================================================================
 
