@@ -102,6 +102,8 @@ df['Ore_STD'] = df['QTA_RESIDUA_PADRE'] * tempo_ciclo_collo
 
 st.subheader('Dettaglio colli')
 df
+scarica_excel(df, 'Dettaglio_colli_producibili.xlsx')
+
 
 st.subheader('Metriche riassuntive')
 st.divider()
