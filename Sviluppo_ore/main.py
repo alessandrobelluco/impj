@@ -10,7 +10,7 @@ with head_sx:
     st.title('Sviluppo ore di produzione')
 
 with head_dx:
-    st.image('logo_impj.png')
+    st.image('https://github.com/alessandrobelluco/impj/blob/main/Sviluppo_ore/logo_impj.png?raw=True')
 
 st.divider()
 
