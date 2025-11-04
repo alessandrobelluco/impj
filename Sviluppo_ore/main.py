@@ -91,7 +91,7 @@ st.subheader('Metriche riassuntive')
 st.divider()
 ore_1, ore_2, ore_3, ore_4 = st.columns([1,1,1,1])
 
-ore_1.metric('Totale colli mancanti', value = df['QTA_RESIDUA_PADRE'].astype(int).sum())
+ore_1.metric('Totale colli producibili', value = df['QTA_RESIDUA_PADRE'].astype(int).sum())
 
 ore_tot = df['Ore_STD'].sum()
 ore_2.metric('Ore totali necessarie', value = f'{ore_tot:.1f}')
