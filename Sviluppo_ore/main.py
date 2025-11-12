@@ -39,6 +39,9 @@ if st.toggle('Modifica parametri'):
 
 def multifiltro(df, campo, selected ):
     df = df[[any(elemento in check for elemento in selected) for check in df[campo].astype(str)]]
+    if len(df) == 0:
+        st.warning('Nessun collo producibile')
+        st.stop()
     return df
 
 def scarica_excel(df, filename):
