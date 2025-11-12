@@ -66,11 +66,8 @@ df['GEST'] = df['GEST'].ffill()
 df['STATO'] = df['STATO'].ffill()
 
 
-if st.checkbox('Solo produzione interna'):
-    df = df[(df.GEST == '1) GRIGIO - PROD INT')].reset_index(drop=True)
 
-else:
-    df = df[(df.GEST == '1) GRIGIO - PROD INT') | (df.GEST  == '3) AZZURRO - ACQ')].reset_index(drop=True)
+df = df[(df.GEST == '1) GRIGIO - PROD INT')].reset_index(drop=True)
 
 df['MONT_SMONT'] = df['MONT_SMONT'].ffill()
 
