@@ -98,7 +98,11 @@ with cx_fil:
 df['Ore_STD'] = df['QTA_RESIDUA_PADRE'] * tempo_ciclo_collo
 
 st.subheader('Dettaglio colli')
-df
+if len(df)!=0:
+    df
+else:
+    st.warning('Nessun collo producibile')
+    st.stop()
 scarica_excel(df, 'Dettaglio_colli_producibili.xlsx')
 
 
