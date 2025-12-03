@@ -561,7 +561,15 @@ with t2:
             **{giorno: st.column_config.NumberColumn(giorno, min_value=0, max_value=50, step=0.1, format='%.1f') for giorno in giorni_settimana}
         }
     )
-    
+     buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        edited_risorse.to_excel(writer, index=False, sheet_name='Dettaglio Colli')
+    st.download_button(
+        label="📥 Scarica Risorse_reparti in Excel",
+        data=buffer.getvalue(),
+        file_name=f"dettaglio_risorse_reparti_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )    
     # Calcola e mostra totali
     totali = edited_risorse[giorni_settimana].sum()
     df_totali = pd.DataFrame([totali]).reset_index(drop=True)
