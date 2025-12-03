@@ -1,8 +1,74 @@
 [
   {
+    "Priorità": NaN,
+    "COMMESSA": "CO-157",
+    "LANCIO": 495701,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-178",
+    "LANCIO": 497801,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-224",
+    "LANCIO": 492401,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-226",
+    "LANCIO": 492605,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-226",
+    "LANCIO": 492620,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-231",
+    "LANCIO": 493110,
+    "ANNO": 2025
+  },
+  {
     "Priorità": 1.0,
     "COMMESSA": "CO-234",
     "LANCIO": 493431,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-254",
+    "LANCIO": 495431,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-254",
+    "LANCIO": 990882,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-254",
+    "LANCIO": 1486329,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-257",
+    "LANCIO": 495710,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": NaN,
+    "COMMESSA": "CO-261",
+    "LANCIO": 490000,
     "ANNO": 2025
   }
 ]
