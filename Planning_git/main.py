@@ -6,6 +6,7 @@ import os
 from datetime import datetime, timedelta
 from github_storage import init_github_storage
 
+
 # FILE DI CONFIGURAZIONE
 CONFIG_RESOURCES = 'config_resources.json'
 CONFIG_PRIORITIES = 'config_priorities.json'
