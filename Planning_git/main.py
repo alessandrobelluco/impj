@@ -336,6 +336,9 @@ with t2:
         
         # Calcolo FTE (7.5 ore/giorno)
         dettaglio_carico['FTE'] = dettaglio_carico['Ore Totali'] / 7.5
+
+        st.dataframe(dettaglio_carico)
+        '''
         
         # Configurazione AG Grid
         gb = GridOptionsBuilder.from_dataframe(dettaglio_carico)
@@ -360,6 +363,7 @@ with t2:
             fit_columns_on_grid_load=True,
             theme='alpine'
         )
+        '''
     
     st.divider()
     
