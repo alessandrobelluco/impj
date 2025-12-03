@@ -561,7 +561,7 @@ with t2:
             **{giorno: st.column_config.NumberColumn(giorno, min_value=0, max_value=50, step=0.1, format='%.1f') for giorno in giorni_settimana}
         }
     )
-     buffer = BytesIO()
+    buffer = BytesIO()
     with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
         edited_risorse.to_excel(writer, index=False, sheet_name='Dettaglio Colli')
     st.download_button(
