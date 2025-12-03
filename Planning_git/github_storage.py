@@ -31,8 +31,53 @@ class GitHubStorage:
         """Stabilisce la connessione con GitHub."""
         try:
             self.github = Github(self.token)
-            self.repo = self.github.get_repo(self.repo_name)
-            return True
+            
+            # Verifica prima l'autenticazione
+            try:
+                user = self.github.get_user()
+                st.sidebar.info(f"👤 Autenticato come: {user.login}")
+            except Exception as auth_error:
+                st.error(f"""
+                ❌ **Errore autenticazione GitHub**
+                
+                Il token fornito non è valido o è scaduto.
+                
+                **Soluzione**:
+                1. Verifica che `GITHUB_TOKEN` nei secrets sia corretto
+                2. Assicurati che il token non sia scaduto
+                3. Genera un nuovo token se necessario
+                
+                Dettagli: {auth_error}
+                """)
+                return False
+            
+            # Prova a connettersi al repository
+            try:
+                self.repo = self.github.get_repo(self.repo_name)
+                return True
+            except Exception as repo_error:
+                if "404" in str(repo_error):
+                    st.error(f"""
+                    ❌ **Repository non trovato**
+                    
+                    Repository cercato: `{self.repo_name}`
+                    
+                    **Possibili cause**:
+                    1. Il nome del repository non è corretto
+                    2. Il repository è privato e il token non ha accesso
+                    3. Il formato deve essere `username/repository` (es: `alessandrorossi/planning-app`)
+                    
+                    **Verifica**:
+                    - Vai su GitHub e controlla che il repository esista
+                    - Verifica il nome esatto (case-sensitive!)
+                    - Se privato, assicurati che il token abbia scope `repo`
+                    
+                    **Token autenticato come**: {user.login}
+                    """)
+                else:
+                    st.error(f"Errore accesso repository: {repo_error}")
+                return False
+                
         except Exception as e:
             st.error(f"Errore connessione GitHub: {e}")
             return False
@@ -154,21 +199,41 @@ def init_github_storage():
         github_branch = st.secrets.get("GITHUB_BRANCH", "main")
         
         if not github_token or not github_repo:
-            st.warning("""
-            ⚠️ Configurazione GitHub mancante.
+            st.sidebar.warning("""
+            ⚠️ **GitHub non configurato**
             
-            Per abilitare la persistenza dei dati:
-            1. Vai su GitHub Settings > Developer settings > Personal access tokens
-            2. Genera un nuovo token con permessi 'repo'
-            3. In Streamlit Cloud, vai su App settings > Secrets
-            4. Aggiungi:
-               ```
-               GITHUB_TOKEN = "your_token_here"
-               GITHUB_REPO = "owner/repo-name"
-               GITHUB_BRANCH = "main"
-               ```
+            L'app funziona in **modalità locale**.
+            I dati saranno salvati solo temporaneamente.
             """)
+            
+            with st.sidebar.expander("ℹ️ Come configurare GitHub"):
+                st.markdown("""
+                **Per abilitare la persistenza:**
+                
+                1. Crea un repository su GitHub
+                2. Genera un Personal Access Token:
+                   - GitHub → Settings → Developer settings
+                   - Personal access tokens → Tokens (classic)
+                   - Genera nuovo token con scope `repo`
+                3. Configura i secrets:
+                   - **Locale**: `.streamlit/secrets.toml`
+                   - **Cloud**: App settings → Secrets
+                
+                ```toml
+                GITHUB_TOKEN = "ghp_..."
+                GITHUB_REPO = "username/repo-name"
+                GITHUB_BRANCH = "main"
+                ```
+                """)
             return None
+        
+        # Mostra configurazione corrente
+        st.sidebar.info(f"""
+        🔧 **Configurazione GitHub**
+        
+        Repository: `{github_repo}`  
+        Branch: `{github_branch}`
+        """)
         
         storage = GitHubStorage(github_token, github_repo, github_branch)
         if storage.connect():
