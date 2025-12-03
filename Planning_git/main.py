@@ -338,32 +338,32 @@ with t2:
         dettaglio_carico['FTE'] = dettaglio_carico['Ore Totali'] / 7.5
 
         st.dataframe(dettaglio_carico)
-        '''
+       
         
         # Configurazione AG Grid
-        gb = GridOptionsBuilder.from_dataframe(dettaglio_carico)
-        gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
+        #gb = GridOptionsBuilder.from_dataframe(dettaglio_carico)
+        #gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
         
-        gb.configure_column('Priorità', rowGroup=True, rowGroupIndex=1, hide=True, sort='asc') 
-        gb.configure_column('Commessa', rowGroup=True, rowGroupIndex=2, hide=True)
-        gb.configure_column('Lancio', rowGroup=True, rowGroupIndex=3, hide=True)
-        gb.configure_column('Reparto', rowGroup=True, rowGroupIndex=0, hide=True) # Reparto come primo raggruppamento
-        gb.configure_column('Colli Totali', aggFunc='sum')
-        gb.configure_column('Ore Totali', aggFunc='sum', valueFormatter="x.toFixed(1)", sort='desc')
-        gb.configure_column('FTE', aggFunc='sum', valueFormatter="x.toFixed(1)", headerName='FTE (7.5h)')
+        #gb.configure_column('Priorità', rowGroup=True, rowGroupIndex=1, hide=True, sort='asc') 
+        #gb.configure_column('Commessa', rowGroup=True, rowGroupIndex=2, hide=True)
+        #gb.configure_column('Lancio', rowGroup=True, rowGroupIndex=3, hide=True)
+        #gb.configure_column('Reparto', rowGroup=True, rowGroupIndex=0, hide=True) # Reparto come primo raggruppamento
+        #gb.configure_column('Colli Totali', aggFunc='sum')
+        #gb.configure_column('Ore Totali', aggFunc='sum', valueFormatter="x.toFixed(1)", sort='desc')
+        #gb.configure_column('FTE', aggFunc='sum', valueFormatter="x.toFixed(1)", headerName='FTE (7.5h)')
         
-        gb.configure_grid_options(domLayout='autoHeight')
-        gridOptions = gb.build()
+        #gb.configure_grid_options(domLayout='autoHeight')
+        #gridOptions = gb.build()
         
-        AgGrid(
-            dettaglio_carico,
-            gridOptions=gridOptions,
-            update_mode=GridUpdateMode.MODEL_CHANGED,
-            data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-            fit_columns_on_grid_load=True,
-            theme='alpine'
-        )
-        '''
+        #AgGrid(
+         #   dettaglio_carico,
+          #  gridOptions=gridOptions,
+        #    update_mode=GridUpdateMode.MODEL_CHANGED,
+         #   data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+          #  fit_columns_on_grid_load=True,
+           # theme='alpine'
+        #)
+
     
     st.divider()
     
@@ -737,31 +737,31 @@ with t2:
             riepilogo['Utilizzo %'] = riepilogo.apply(get_utilizzo, axis=1)
             
             # Configurazione AG Grid
-            '''
-            gb = GridOptionsBuilder.from_dataframe(riepilogo)
-            gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
+
+            #gb = GridOptionsBuilder.from_dataframe(riepilogo)
+            #gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
             
-            gb.configure_column('Giorno', rowGroup=True, rowGroupIndex=0, hide=True)
-            gb.configure_column('Reparto', pivot=False)
-            gb.configure_column('Ore Totali', aggFunc='sum', valueFormatter="x.toFixed(1)")
-            gb.configure_column('Colli Totali', aggFunc='sum', valueFormatter="x.toFixed(0)")
-            gb.configure_column('Capacità (ore)', aggFunc='sum', valueFormatter="x.toFixed(1)")
-            gb.configure_column('Utilizzo %', 
-                valueFormatter="x.toFixed(2) + '%'"
-            )
+            #gb.configure_column('Giorno', rowGroup=True, rowGroupIndex=0, hide=True)
+            #gb.configure_column('Reparto', pivot=False)
+            #gb.configure_column('Ore Totali', aggFunc='sum', valueFormatter="x.toFixed(1)")
+            #gb.configure_column('Colli Totali', aggFunc='sum', valueFormatter="x.toFixed(0)")
+            #gb.configure_column('Capacità (ore)', aggFunc='sum', valueFormatter="x.toFixed(1)")
+           # gb.configure_column('Utilizzo %', 
+            #    valueFormatter="x.toFixed(2) + '%'"
+            #)
             
-            gb.configure_grid_options(domLayout='autoHeight')
-            gridOptions = gb.build()
+            #gb.configure_grid_options(domLayout='autoHeight')
+            #gridOptions = gb.build()
             
-            AgGrid(
-                riepilogo,
-                gridOptions=gridOptions,
-                update_mode=GridUpdateMode.MODEL_CHANGED,
-                data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-                fit_columns_on_grid_load=True,
-                theme='alpine'
-            )
-            '''
+            #AgGrid(
+            #    riepilogo,
+             #   gridOptions=gridOptions,
+             #   update_mode=GridUpdateMode.MODEL_CHANGED,
+           #     data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+            #    fit_columns_on_grid_load=True,
+             #   theme='alpine'
+           # )
+
             st.dataframe(riepilogo)
 
         
