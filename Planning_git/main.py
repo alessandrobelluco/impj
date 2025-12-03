@@ -86,7 +86,8 @@ with head_sx:
     st.title('Sviluppo ore di produzione')
 
 with head_dx:
-    st.image('logo_impj.png')
+    #st.image('logo_impj.png')
+    pass
 
 st.divider()
 
