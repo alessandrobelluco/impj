@@ -737,6 +737,7 @@ with t2:
             riepilogo['Utilizzo %'] = riepilogo.apply(get_utilizzo, axis=1)
             
             # Configurazione AG Grid
+            '''
             gb = GridOptionsBuilder.from_dataframe(riepilogo)
             gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
             
@@ -760,6 +761,10 @@ with t2:
                 fit_columns_on_grid_load=True,
                 theme='alpine'
             )
+            '''
+            st.dataframe(riepilogo)
+
+        
         else:
             st.info('Nessun codice assegnato da visualizzare')
     
