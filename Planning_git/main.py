@@ -4,6 +4,7 @@ import pandas as pd
 import json
 import os
 from datetime import datetime, timedelta
+from io import BytesIO
 from github_storage import init_github_storage
 
 # FILE DI CONFIGURAZIONE
@@ -88,7 +89,7 @@ with head_sx:
     st.title('Sviluppo ore di produzione')
 
 with head_dx:
-    st.image('https://github.com/alessandrobelluco/impj/blob/main/Planning_git/logo_impj.png?raw=True')
+    st.image('logo_impj.png')
 
 st.divider()
 
@@ -293,6 +294,17 @@ with t1:
 
     st.subheader('Dettaglio colli')
     df
+    
+    # Pulsante download
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Dettaglio Colli')
+    st.download_button(
+        label="📥 Scarica Dettaglio Colli in Excel",
+        data=buffer.getvalue(),
+        file_name=f"dettaglio_colli_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
     st.subheader('Metriche riassuntive')
     st.divider()
@@ -392,6 +404,18 @@ with t2:
             st.metric('Persone Totali Necessarie', f"{persone_totali:.1f}")
         
         st.info('**Suggerimento**: Usa i valori "Persone/Giorno Media" come riferimento per compilare la tabella risorse sottostante')
+        
+        # Pulsante download
+        buffer = BytesIO()
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+            carico_reparto.to_excel(writer, index=False, sheet_name='Carico Lavoro Reparto')
+        st.download_button(
+            label="📥 Scarica Carico Lavoro in Excel",
+            data=buffer.getvalue(),
+            file_name=f"carico_lavoro_reparto_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="download_carico_reparto"
+        )
 
         st.divider()
         
@@ -474,6 +498,18 @@ with t2:
                 'Ore Totali': st.column_config.NumberColumn('Ore Totali', format='%.1f'),
                 'FTE (7.5h)': st.column_config.NumberColumn('FTE (7.5h)', format='%.1f')
             }
+        )
+        
+        # Pulsante download
+        buffer = BytesIO()
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+            dettaglio_carico.to_excel(writer, index=False, sheet_name='Dettaglio Carico')
+        st.download_button(
+            label="📥 Scarica Dettaglio Carico in Excel",
+            data=buffer.getvalue(),
+            file_name=f"dettaglio_carico_commessa_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="download_dettaglio_carico"
         )
     
     st.divider()
@@ -758,6 +794,18 @@ with t2:
                     'Colli Non Assegnati': st.column_config.NumberColumn('Colli Non Assegnati', format='%.1f')
                 }
             )
+            
+            # Pulsante download
+            buffer = BytesIO()
+            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                dettaglio_non_assegnati.to_excel(writer, index=False, sheet_name='Colli Non Assegnati')
+            st.download_button(
+                label="📥 Scarica Colli Non Assegnati in Excel",
+                data=buffer.getvalue(),
+                file_name=f"colli_non_assegnati_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                key="download_non_assegnati"
+            )
         else:
             st.success('Tutti i colli sono stati assegnati!')
 
@@ -796,6 +844,17 @@ with t2:
             hide_index=True
         )
         
+        # Pulsante download
+        buffer = BytesIO()
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+            df_display[cols_to_show].to_excel(writer, index=False, sheet_name='Programma Produzione')
+        st.download_button(
+            label="📥 Scarica Programma di Produzione in Excel",
+            data=buffer.getvalue(),
+            file_name=f"programma_produzione_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="download_programma"
+        )
 
         
         # Riepilogo per giorno
@@ -861,13 +920,24 @@ with t2:
                     'Utilizzo %': st.column_config.NumberColumn('Utilizzo %', format='%.2f %%')
                 }
             )
+            
+            # Pulsante download
+            buffer = BytesIO()
+            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                riepilogo.to_excel(writer, index=False, sheet_name='Riepilogo Giorno Reparto')
+            st.download_button(
+                label="📥 Scarica Riepilogo Carico in Excel",
+                data=buffer.getvalue(),
+                file_name=f"riepilogo_carico_giorno_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                key="download_riepilogo"
+            )
         else:
             st.info('Nessun codice assegnato da visualizzare')
     
     # Mostra programma esistente se già generato
     elif 'programma_produzione' in st.session_state and st.session_state.programma_produzione is not None:
         st.info('Programma già generato. Clicca "Genera Programma" per rigenerarlo con nuovi parametri.')
-
 
 
 
