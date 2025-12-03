@@ -4,12 +4,12 @@ import pandas as pd
 import json
 import os
 from datetime import datetime, timedelta
-from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
 from github_storage import init_github_storage
 
 # FILE DI CONFIGURAZIONE
 CONFIG_RESOURCES = 'config_resources.json'
 CONFIG_PRIORITIES = 'config_priorities.json'
+CONFIG_CYCLE_TIMES = 'config_cycle_times.json'
 
 # Inizializza GitHub Storage
 @st.cache_resource
@@ -72,6 +72,8 @@ if 'df' not in st.session_state:
     st.session_state.df = None
 if 'tempo_ciclo_collo' not in st.session_state:
     st.session_state.tempo_ciclo_collo = None
+if 'tempi_ciclo_reparto' not in st.session_state:
+    st.session_state.tempi_ciclo_reparto = None
 
 # Mostra stato connessione GitHub
 github_storage = get_github_storage()
@@ -86,8 +88,7 @@ with head_sx:
     st.title('Sviluppo ore di produzione')
 
 with head_dx:
-    #st.image('logo_impj.png')
-    pass
+    st.image('logo_impj.png')
 
 st.divider()
 
@@ -105,6 +106,11 @@ with t1:
 
     st.session_state.df = pd.read_excel(path)
 
+    # Carica tempi ciclo salvati all'avvio
+    if st.session_state.tempi_ciclo_reparto is None:
+        saved_cycle_times = load_config(CONFIG_CYCLE_TIMES)
+        if saved_cycle_times:
+            st.session_state.tempi_ciclo_reparto = pd.DataFrame(saved_cycle_times)
 
     colli_gg = 400
     h_c = 11
@@ -116,6 +122,61 @@ with t1:
         colli_gg = st.number_input('Colli/giorno', value=400, min_value=350, max_value=600, step=1)
         h_c = st.number_input('Operatori fabbrica', value=11, min_value=5, max_value=20, step=1)
         st.session_state.tempo_ciclo_collo = 7.5/(colli_gg/h_c)
+        
+        st.divider()
+        st.write('**Tempi Ciclo per Reparto (minuti/collo)**')
+        st.write('Personalizza il tempo ciclo per ogni reparto. Default: 12.5 minuti/collo')
+        
+        # Estrai reparti unici dal dataframe
+        if 'REPARTO_ARTICOLO' in st.session_state.df.columns:
+            df_temp = st.session_state.df.copy()
+            df_temp['REPARTO_ARTICOLO'] = df_temp['REPARTO_ARTICOLO'].ffill()
+            reparti_unici = sorted(df_temp['REPARTO_ARTICOLO'].dropna().unique())
+            
+            # Crea dataframe per tempi ciclo
+            tempi_ciclo_df = pd.DataFrame({
+                'Reparto': reparti_unici,
+                'Tempo Ciclo (min/collo)': 12.5
+            })
+            
+            # Carica configurazione salvata se esiste
+            saved_cycle_times = load_config(CONFIG_CYCLE_TIMES)
+            if saved_cycle_times:
+                saved_df = pd.DataFrame(saved_cycle_times)
+                if 'Reparto' in saved_df.columns and 'Tempo Ciclo (min/collo)' in saved_df.columns:
+                    # Aggiorna con i valori salvati
+                    tempi_ciclo_df = tempi_ciclo_df.set_index('Reparto')
+                    saved_df = saved_df.set_index('Reparto')
+                    tempi_ciclo_df.update(saved_df)
+                    tempi_ciclo_df = tempi_ciclo_df.reset_index()
+            
+            edited_cycle_times = st.data_editor(
+                tempi_ciclo_df,
+                use_container_width=True,
+                hide_index=True,
+                key='cycle_times_editor',
+                column_config={
+                    'Reparto': st.column_config.TextColumn('Reparto', disabled=True),
+                    'Tempo Ciclo (min/collo)': st.column_config.NumberColumn(
+                        'Tempo Ciclo (min/collo)',
+                        min_value=0.1,
+                        max_value=120.0,
+                        step=0.5,
+                        format='%.2f',
+                        help='Tempo necessario per produrre un collo (in minuti)'
+                    )
+                }
+            )
+            
+            col_save1, col_save2 = st.columns([1, 1])
+            with col_save1:
+                if st.button('Salva Tempi Ciclo', use_container_width=True):
+                    if save_config(edited_cycle_times.to_dict('records'), CONFIG_CYCLE_TIMES):
+                        st.session_state.tempi_ciclo_reparto = edited_cycle_times
+                        st.toast('Tempi ciclo salvati con successo')
+            
+            # Salva in session state per uso successivo
+            st.session_state.tempi_ciclo_reparto = edited_cycle_times
 
     # FUNZIONI ==============================================================================================================================
 
@@ -212,8 +273,22 @@ with t2:
     
     df = st.session_state.df_filtrato.copy()
     
-    # Calcola ore necessarie
-    df['Ore_Necessarie'] = df['QTA_RESIDUA_PADRE'] * st.session_state.tempo_ciclo_collo
+    # Calcola ore necessarie usando i tempi ciclo per reparto se disponibili
+    if st.session_state.tempi_ciclo_reparto is not None and not st.session_state.tempi_ciclo_reparto.empty:
+        # Crea dizionario reparto -> tempo ciclo (converti da minuti a ore dividendo per 60)
+        tempi_ciclo_dict = dict(zip(
+            st.session_state.tempi_ciclo_reparto['Reparto'],
+            st.session_state.tempi_ciclo_reparto['Tempo Ciclo (min/collo)'] / 60
+        ))
+        
+        # Applica il tempo ciclo specifico per reparto
+        df['Tempo_Ciclo_Ore'] = df['REPARTO_ARTICOLO'].map(tempi_ciclo_dict)
+        # Usa default se reparto non trovato
+        df['Tempo_Ciclo_Ore'] = df['Tempo_Ciclo_Ore'].fillna(12.5 / 60)
+        df['Ore_Necessarie'] = df['QTA_RESIDUA_PADRE'] * df['Tempo_Ciclo_Ore']
+    else:
+        # Usa tempo ciclo standard se non configurato
+        df['Ore_Necessarie'] = df['QTA_RESIDUA_PADRE'] * st.session_state.tempo_ciclo_collo
     
     # Sezione 0: Analisi Carico di Lavoro
     st.subheader('Analisi Carico di Lavoro per Reparto')
@@ -335,35 +410,20 @@ with t2:
         dettaglio_carico = dettaglio_carico.sort_values(['Priorità', 'Ore Totali'], ascending=[True, False]).reset_index(drop=True)
         
         # Calcolo FTE (7.5 ore/giorno)
-        dettaglio_carico['FTE'] = dettaglio_carico['Ore Totali'] / 7.5
-
-        st.dataframe(dettaglio_carico)
-       
+        dettaglio_carico['FTE (7.5h)'] = dettaglio_carico['Ore Totali'] / 7.5
         
-        # Configurazione AG Grid
-        #gb = GridOptionsBuilder.from_dataframe(dettaglio_carico)
-        #gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
-        
-        #gb.configure_column('Priorità', rowGroup=True, rowGroupIndex=1, hide=True, sort='asc') 
-        #gb.configure_column('Commessa', rowGroup=True, rowGroupIndex=2, hide=True)
-        #gb.configure_column('Lancio', rowGroup=True, rowGroupIndex=3, hide=True)
-        #gb.configure_column('Reparto', rowGroup=True, rowGroupIndex=0, hide=True) # Reparto come primo raggruppamento
-        #gb.configure_column('Colli Totali', aggFunc='sum')
-        #gb.configure_column('Ore Totali', aggFunc='sum', valueFormatter="x.toFixed(1)", sort='desc')
-        #gb.configure_column('FTE', aggFunc='sum', valueFormatter="x.toFixed(1)", headerName='FTE (7.5h)')
-        
-        #gb.configure_grid_options(domLayout='autoHeight')
-        #gridOptions = gb.build()
-        
-        #AgGrid(
-         #   dettaglio_carico,
-          #  gridOptions=gridOptions,
-        #    update_mode=GridUpdateMode.MODEL_CHANGED,
-         #   data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-          #  fit_columns_on_grid_load=True,
-           # theme='alpine'
-        #)
-
+        # Mostra tabella con dataframe
+        st.dataframe(
+            dettaglio_carico,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                'Priorità': st.column_config.NumberColumn('Priorità', format='%.0f'),
+                'Colli Totali': st.column_config.NumberColumn('Colli Totali', format='%.0f'),
+                'Ore Totali': st.column_config.NumberColumn('Ore Totali', format='%.1f'),
+                'FTE (7.5h)': st.column_config.NumberColumn('FTE (7.5h)', format='%.1f')
+            }
+        )
     
     st.divider()
     
@@ -736,41 +796,30 @@ with t2:
             riepilogo['Capacità (ore)'] = riepilogo.apply(get_capacita, axis=1)
             riepilogo['Utilizzo %'] = riepilogo.apply(get_utilizzo, axis=1)
             
-            # Configurazione AG Grid
-
-            #gb = GridOptionsBuilder.from_dataframe(riepilogo)
-            #gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
-            
-            #gb.configure_column('Giorno', rowGroup=True, rowGroupIndex=0, hide=True)
-            #gb.configure_column('Reparto', pivot=False)
-            #gb.configure_column('Ore Totali', aggFunc='sum', valueFormatter="x.toFixed(1)")
-            #gb.configure_column('Colli Totali', aggFunc='sum', valueFormatter="x.toFixed(0)")
-            #gb.configure_column('Capacità (ore)', aggFunc='sum', valueFormatter="x.toFixed(1)")
-           # gb.configure_column('Utilizzo %', 
-            #    valueFormatter="x.toFixed(2) + '%'"
-            #)
-            
-            #gb.configure_grid_options(domLayout='autoHeight')
-            #gridOptions = gb.build()
-            
-            #AgGrid(
-            #    riepilogo,
-             #   gridOptions=gridOptions,
-             #   update_mode=GridUpdateMode.MODEL_CHANGED,
-           #     data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-            #    fit_columns_on_grid_load=True,
-             #   theme='alpine'
-           # )
-
-            st.dataframe(riepilogo)
-
-        
+            # Mostra tabella con dataframe
+            st.dataframe(
+                riepilogo,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    'Giorno': st.column_config.TextColumn('Giorno'),
+                    'Reparto': st.column_config.TextColumn('Reparto'),
+                    'Ore Totali': st.column_config.NumberColumn('Ore Totali', format='%.1f'),
+                    'Colli Totali': st.column_config.NumberColumn('Colli Totali', format='%.0f'),
+                    'Capacità (ore)': st.column_config.NumberColumn('Capacità (ore)', format='%.1f'),
+                    'Utilizzo %': st.column_config.NumberColumn('Utilizzo %', format='%.2f %%')
+                }
+            )
         else:
             st.info('Nessun codice assegnato da visualizzare')
     
     # Mostra programma esistente se già generato
     elif 'programma_produzione' in st.session_state and st.session_state.programma_produzione is not None:
         st.info('Programma già generato. Clicca "Genera Programma" per rigenerarlo con nuovi parametri.')
+
+
+
+
 
 
 
