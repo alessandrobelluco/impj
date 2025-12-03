@@ -1,5 +1,14 @@
 [
   {
+    "Reparto": "ESF",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
     "Reparto": "E09",
     "Lunedì": 7.0,
     "Martedì": 0.0,
@@ -9,8 +18,8 @@
     "Sabato": 0.0
   },
   {
-    "Reparto": "E01",
-    "Lunedì": 5.0,
+    "Reparto": "E05",
+    "Lunedì": 0.0,
     "Martedì": 0.0,
     "Mercoledì": 0.0,
     "Giovedì": 0.0,
@@ -27,7 +36,7 @@
     "Sabato": 0.0
   },
   {
-    "Reparto": "E04",
+    "Reparto": "E12",
     "Lunedì": 5.0,
     "Martedì": 0.0,
     "Mercoledì": 0.0,
@@ -36,7 +45,7 @@
     "Sabato": 0.0
   },
   {
-    "Reparto": "E12",
+    "Reparto": "E01",
     "Lunedì": 5.0,
     "Martedì": 0.0,
     "Mercoledì": 0.0,
@@ -54,7 +63,88 @@
     "Sabato": 0.0
   },
   {
+    "Reparto": "E04",
+    "Lunedì": 5.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "KBB",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E14",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
     "Reparto": "E15",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E02",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E00",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E99",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E06",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E10",
+    "Lunedì": 0.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E11",
     "Lunedì": 0.0,
     "Martedì": 0.0,
     "Mercoledì": 0.0,
