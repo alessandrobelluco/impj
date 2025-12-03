@@ -6,7 +6,6 @@ import os
 from datetime import datetime, timedelta
 from github_storage import init_github_storage
 
-
 # FILE DI CONFIGURAZIONE
 CONFIG_RESOURCES = 'config_resources.json'
 CONFIG_PRIORITIES = 'config_priorities.json'
@@ -89,7 +88,7 @@ with head_sx:
     st.title('Sviluppo ore di produzione')
 
 with head_dx:
-    st.image('https://github.com/alessandrobelluco/impj/blob/main/Planning_git/logo_impj.png?raw=True')
+    st.image('logo_impj.png')
 
 st.divider()
 
@@ -187,6 +186,15 @@ with t1:
 
     # FILTRO ================================================================================================================================
 
+    # Crea copia completa per calcolo metriche producibilità
+    df_completo = st.session_state.df.copy()
+    df_completo['COMMESSA'] = df_completo['COMMESSA'].ffill()
+    df_completo['ANNO'] = df_completo['ANNO'].ffill()
+    df_completo['WEEK'] = df_completo['WEEK'].ffill()
+    df_completo['LANCIO'] = df_completo['LANCIO'].ffill()
+    df_completo['GEST'] = df_completo['GEST'].ffill()
+    df_completo['STATO'] = df_completo['STATO'].ffill()
+    
     df = st.session_state.df.copy()
     df['COMMESSA'] = df['COMMESSA'].ffill()
     df['ANNO'] = df['ANNO'].ffill()
@@ -198,11 +206,14 @@ with t1:
 
     if st.checkbox('Solo produzione interna'):
         df = df[(df.GEST == '1) GRIGIO - PROD INT')].reset_index(drop=True)
+        df_completo = df_completo[(df_completo.GEST == '1) GRIGIO - PROD INT')].reset_index(drop=True)
 
     else:
         df = df[(df.GEST == '1) GRIGIO - PROD INT') | (df.GEST  == '3) AZZURRO - ACQ')].reset_index(drop=True)
+        df_completo = df_completo[(df_completo.GEST == '1) GRIGIO - PROD INT') | (df_completo.GEST  == '3) AZZURRO - ACQ')].reset_index(drop=True)
 
     df['MONT_SMONT'] = df['MONT_SMONT'].ffill()
+    df_completo['MONT_SMONT'] = df_completo['MONT_SMONT'].ffill()
 
     df = df[df.STATO == 'INEVASO - PRODUCIBILE'].reset_index(drop=True)
     df['QTA_PRODOTTA'] = df['QTA_PRODOTTA'].fillna(0)
@@ -231,6 +242,7 @@ with t1:
             selected_lancio = df.LANCIO.astype(int).astype(str).unique()
 
         df = multifiltro(df, 'LANCIO', selected_lancio)
+        df_completo = multifiltro(df_completo, 'LANCIO', selected_lancio)
         
     with dx_fil:
         st.write('') # Spacer
@@ -240,6 +252,44 @@ with t1:
             st.toast('Filtro applicato alla tab Programmazione')
 
     df['Ore_STD'] = df['QTA_RESIDUA_PADRE'] * st.session_state.tempo_ciclo_collo
+    
+    # Metriche Producibilità per Lancio
+    st.divider()
+    st.subheader('Analisi Producibilità per Lancio')
+    
+    if not df_completo.empty and 'QTA_RESIDUA_PADRE' in df_completo.columns:
+        # Prepara colonna QTA per entrambi i dataframe
+        df_completo['QTA_PRODOTTA'] = df_completo['QTA_PRODOTTA'].fillna(0)
+        
+        # Calcola colli totali per lancio (tutti gli stati)
+        colli_totali_lancio = df_completo.groupby('LANCIO')['QTA_RESIDUA_PADRE'].sum()
+        
+        # Calcola colli producibili per lancio (solo INEVASO - PRODUCIBILE)
+        colli_producibili_lancio = df.groupby('LANCIO')['QTA_RESIDUA_PADRE'].sum()
+        
+        # Crea dataframe riepilogativo
+        lanci_selezionati = sorted(selected_lancio)
+        metriche_cols = st.columns(min(len(lanci_selezionati), 4))
+        
+        for idx, lancio in enumerate(lanci_selezionati):
+            lancio_int = int(lancio)
+            
+            totale = colli_totali_lancio.get(lancio_int, 0)
+            producibili = colli_producibili_lancio.get(lancio_int, 0)
+            non_producibili = totale - producibili
+            
+            perc_producibili = (producibili / totale * 100) if totale > 0 else 0
+            perc_non_producibili = (non_producibili / totale * 100) if totale > 0 else 0
+            
+            col = metriche_cols[idx % len(metriche_cols)]
+            
+            with col:
+                st.metric(f"Lancio {lancio}", f"{totale:.0f} colli")
+                st.write(f"✅ Producibili: **{producibili:.0f}** ({perc_producibili:.1f}%)")
+                st.write(f"⚠️ Non producibili: **{non_producibili:.0f}** ({perc_non_producibili:.1f}%)")
+                st.progress(perc_producibili / 100)
+    else:
+        st.info('Selezionare lanci per visualizzare le metriche di producibilità')
 
     st.subheader('Dettaglio colli')
     df
@@ -817,6 +867,9 @@ with t2:
     # Mostra programma esistente se già generato
     elif 'programma_produzione' in st.session_state and st.session_state.programma_produzione is not None:
         st.info('Programma già generato. Clicca "Genera Programma" per rigenerarlo con nuovi parametri.')
+
+
+
 
 
 
