@@ -1,8 +1,8 @@
 [
   {
     "Reparto": "E09",
-    "Lunedì": 7.0,
-    "Martedì": 0.0,
+    "Lunedì": 3.0,
+    "Martedì": 2.0,
     "Mercoledì": 0.0,
     "Giovedì": 0.0,
     "Venerdì": 0.0,
@@ -10,17 +10,8 @@
   },
   {
     "Reparto": "E13",
-    "Lunedì": 7.0,
-    "Martedì": 0.0,
-    "Mercoledì": 0.0,
-    "Giovedì": 0.0,
-    "Venerdì": 0.0,
-    "Sabato": 0.0
-  },
-  {
-    "Reparto": "E12",
-    "Lunedì": 5.0,
-    "Martedì": 0.0,
+    "Lunedì": 2.0,
+    "Martedì": 1.0,
     "Mercoledì": 0.0,
     "Giovedì": 0.0,
     "Venerdì": 0.0,
@@ -28,26 +19,17 @@
   },
   {
     "Reparto": "E01",
-    "Lunedì": 5.0,
-    "Martedì": 0.0,
+    "Lunedì": 2.0,
+    "Martedì": 3.0,
     "Mercoledì": 0.0,
     "Giovedì": 0.0,
     "Venerdì": 0.0,
     "Sabato": 0.0
   },
   {
-    "Reparto": "E08",
-    "Lunedì": 5.0,
-    "Martedì": 0.0,
-    "Mercoledì": 0.0,
-    "Giovedì": 0.0,
-    "Venerdì": 0.0,
-    "Sabato": 0.0
-  },
-  {
-    "Reparto": "E14",
-    "Lunedì": 0.0,
-    "Martedì": 0.0,
+    "Reparto": "E12",
+    "Lunedì": 1.0,
+    "Martedì": 2.0,
     "Mercoledì": 0.0,
     "Giovedì": 0.0,
     "Venerdì": 0.0,
@@ -55,7 +37,25 @@
   },
   {
     "Reparto": "E04",
-    "Lunedì": 5.0,
+    "Lunedì": 1.0,
+    "Martedì": 2.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E08",
+    "Lunedì": 1.0,
+    "Martedì": 0.0,
+    "Mercoledì": 0.0,
+    "Giovedì": 0.0,
+    "Venerdì": 0.0,
+    "Sabato": 0.0
+  },
+  {
+    "Reparto": "E15",
+    "Lunedì": 0.0,
     "Martedì": 0.0,
     "Mercoledì": 0.0,
     "Giovedì": 0.0,
