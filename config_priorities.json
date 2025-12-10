@@ -1,8 +1,14 @@
 [
   {
-    "Priorità": NaN,
-    "COMMESSA": "CO-231",
-    "LANCIO": 493110,
+    "Priorità": 1.0,
+    "COMMESSA": "CO-226",
+    "LANCIO": 492605,
+    "ANNO": 2025
+  },
+  {
+    "Priorità": 2.0,
+    "COMMESSA": "CO-234",
+    "LANCIO": 493431,
     "ANNO": 2025
   }
 ]
