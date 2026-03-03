@@ -29,14 +29,14 @@ DAILY_CAP_H   = 8.0          # soglia overload (ore/giorno)
 WORK_DAYS     = "1111100"    # lun-ven (formato numpy busday)
 image_link ='https://github.com/alessandrobelluco/impj/blob/main/Workload_GanttPro/logo_impj.png?raw=True'
 
-try:
-    API_KEY = st.secrets["api_key"]
+#try:
+#API_KEY = st.secrets["api_key"]
     
-except KeyError:
-    API_KEY = st.text_input("API Key", type="password")
-    if not API_KEY:
-        st.warning('Inserire API_KEY Gantt Pro')
-        st.stop()
+#except KeyError:
+API_KEY = st.text_input("API Key", type="password")
+if not API_KEY:
+    st.warning('Inserire API_KEY Gantt Pro')
+    st.stop()
 
 st.set_page_config(
     page_title="GanttPro Workload",
