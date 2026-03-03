@@ -27,7 +27,7 @@ from datetime import date, timedelta
 BASE_URL      = "https://api.ganttpro.com/v1.0"
 DAILY_CAP_H   = 8.0          # soglia overload (ore/giorno)
 WORK_DAYS     = "1111100"    # lun-ven (formato numpy busday)
-
+image_link ='https://github.com/alessandrobelluco/impj/blob/main/Workload_GanttPro/logo_impj.png?raw=True'
 
 try:
     API_KEY = st.secrets["api_key"]
@@ -370,7 +370,10 @@ overload_mask = daily_load > cap_value
 
 
 # ── Header metriche ───────────────────────────────────────────────────────────
-st.title("GanttPro — Workload Analyzer")
+h_sx, h_dx = st.columns([3,1])
+
+h_sx.title("GanttPro — Workload Analyzer")
+h_dx.image(image_link)
 
 c1, c2, c3, c4, c5 = st.columns(5)
 c1.metric("Progetti",   len(dff["progetto"].unique()))
