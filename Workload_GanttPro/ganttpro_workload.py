@@ -29,7 +29,6 @@ DAILY_CAP_H   = 8.0          # soglia overload (ore/giorno)
 WORK_DAYS     = "1111100"    # lun-ven (formato numpy busday)
 
 
-
 try:
     API_KEY = st.secrets["api_key"]
     
@@ -56,6 +55,10 @@ PROJ_PALETTE = [
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.title("GanttPro Workload")
+    password = st.text_input('Inserire password', type='password')
+    if password != st.secrets['psw']:
+        st.error('Password errata')
+        st.stop()
     
     st.caption("Analisi del carico di lavoro per risorsa, con visibilità cross-progetto.")
 
