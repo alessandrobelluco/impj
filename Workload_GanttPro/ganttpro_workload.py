@@ -55,10 +55,10 @@ PROJ_PALETTE = [
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.title("GanttPro Workload")
-    password = st.text_input('Inserire password', type='password')
-    if password != st.secrets['psw']:
-        st.error('Password errata')
-        st.stop()
+    #password = st.text_input('Inserire password', type='password')
+    #if password != st.secrets['psw']:
+        #st.error('Password errata')
+        #st.stop()
     
     st.caption("Analisi del carico di lavoro per risorsa, con visibilità cross-progetto.")
 
