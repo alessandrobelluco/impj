@@ -35,7 +35,7 @@ image_link ='https://github.com/alessandrobelluco/impj/blob/main/Workload_GanttP
 #except KeyError:
 API_KEY = st.sidebar.text_input("API Key", type="password")
 if not API_KEY:
-    st.sidebar.arning('Inserire API_KEY Gantt Pro')
+    st.sidebar.warning('Inserire API_KEY Gantt Pro')
     st.stop()
 
 st.set_page_config(
